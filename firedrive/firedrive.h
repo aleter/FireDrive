@@ -15,6 +15,10 @@ public:
     explicit FireDrive(QWidget *parent = 0);
     ~FireDrive();
 
+public slots:
+    void _new_mnt();
+
+
 private:
     Ui::FireDrive *ui;
 };

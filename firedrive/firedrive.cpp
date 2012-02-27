@@ -1,6 +1,11 @@
 #include "firedrive.h"
 #include "ui_firedrive.h"
 
+#include "QProcess"
+
+#include "sys/unistd.h"
+#include "stdio.h"
+
 FireDrive::FireDrive(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::FireDrive)
@@ -11,4 +16,10 @@ FireDrive::FireDrive(QWidget *parent) :
 FireDrive::~FireDrive()
 {
     delete ui;
+}
+
+void FireDrive::_new_mnt()
+{
+    printf("OLOLOOLO \n ");
+
 }
