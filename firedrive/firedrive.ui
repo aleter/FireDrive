@@ -90,8 +90,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>FireDrive</receiver>
+   <slot>_un_mnt()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>286</x>
+     <y>109</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>271</x>
+     <y>170</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>_new_mnt()</slot>
+  <slot>_init()</slot>
+  <slot>_un_mnt()</slot>
  </slots>
 </ui>
