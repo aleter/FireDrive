@@ -11,8 +11,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        firedrive.cpp
+        firedrive.cpp \
+    drive.cpp
 
-HEADERS  += firedrive.h
+HEADERS  += firedrive.h \
+    drive.h
 
 FORMS    += firedrive.ui

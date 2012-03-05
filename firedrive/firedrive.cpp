@@ -7,6 +7,7 @@
 #include "QFileDialog"
 
 #include "stdio.h"
+#include "string.h"
 
 FireDrive::FireDrive(QWidget *parent) :
     QMainWindow(parent),
@@ -37,19 +38,14 @@ void FireDrive::run_sh()
     arguments.clear();
     arguments << "-t" << "/bin/sh" << "/tmp/FD__tmp.sh";
     proc->start("kdesu",arguments);
-    while(proc->Running)
-    {
-        int bo = proc->bytesAvailable();
-        if( bo > 0 )
-        {
-            ret = proc->readAllStandardOutput();
-        }
-    }
+    proc->waitForFinished();
 
+    ret = proc->readAllStandardOutput();
+    printf("finished\n");
     printf("%s",QString("").append(ret).toStdString().c_str());
 
     delete proc;
-    delete f;
+    //delete f;
 }
 
 void FireDrive::_new_mnt()
@@ -60,7 +56,9 @@ void FireDrive::_new_mnt()
          tr("Select image"), "~/", tr("Device Image Files (*.iso)"));
     printf(" -- iso selected %s \n",fname.toStdString().c_str());
 
-    this->cmds.push_back(QString("mdconfig -a -t vnode -f %s -u %d\n").arg(fname,this->mntcount));
+    this->cmds.push_back(QString("").sprintf("mdconfig -a -t vnode -f \"%s\" -u %d\n",
+                                             fname.toStdString().c_str(),
+                                             this->mntcount).toStdString().c_str());
 
 
     fname = QFileDialog::getExistingDirectory(
@@ -69,10 +67,13 @@ void FireDrive::_new_mnt()
             "~/" );
     printf(" -- mpoint selected %s \n",fname.toStdString().c_str());
 
-    this->cmds.push_back(QString("mount -t cd9660 /dev/md%s %s\n").arg(QString::number(this->mntcount),fname));
+    this->cmds.push_back(QString("").sprintf("mount -t cd9660 /dev/md%s \"%s\"\n",
+                                             QString::number(this->mntcount).toStdString().c_str(),
+                                             fname.toStdString().c_str()));
 
-    this->cmds.push_back(QString("chmod 777 %s\n").arg(fname));
-
+    //this->cmds.push_back(QString("").sprintf("chmod 777 \"%s\"\n",
+    //                                         fname.toStdString().c_str()));
+    this->mntcount++;
     this->run_sh();
 
 }
@@ -83,9 +84,15 @@ void FireDrive::_init()
     this->cmds.push_back(QString("mount -l | grep /dev/md\n"));
     this->run_sh();
 
+    if(this->ret.length()==0)
+    {
+        this->mntcount = 0;
+    }else
+    {
+        //TODO: check for exiting devices
+        QString tstr = QString("").append(this->ret);
 
-    this->mntcount = 0; //TODO: check for exiting devices
-
+    }
 }
 
 void FireDrive::_un_mnt()
